@@ -12,8 +12,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-
-<BorderPane prefHeight="473.0" prefWidth="339.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.171" fx:controller="it.polito.tdp.food.FoodController">
+<BorderPane prefHeight="473.0" prefWidth="339.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polito.tdp.food.FoodController">
    <top>
       <Label text="Esame 12/07/2019 - Turno A" BorderPane.alignment="CENTER">
          <BorderPane.margin>
@@ -72,10 +71,13 @@
                   <ComboBox fx:id="boxFood" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                </children>
             </GridPane>
-            <TextArea fx:id="txtResult" prefHeight="354.0" prefWidth="300.0">
+            <TextArea fx:id="txtResult" editable="false" prefHeight="354.0" prefWidth="300.0" wrapText="true">
                <VBox.margin>
                   <Insets top="10.0" />
                </VBox.margin>
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" />
+               </padding>
             </TextArea>
          </children>
       </VBox>

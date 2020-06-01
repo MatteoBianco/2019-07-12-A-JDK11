@@ -5,8 +5,13 @@
 package it.polito.tdp.food;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.ResourceBundle;
 
+import it.polito.tdp.food.model.Food;
+import it.polito.tdp.food.model.FoodPair;
 import it.polito.tdp.food.model.Model;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -41,7 +46,7 @@ public class FoodController {
     private Button btnSimula; // Value injected by FXMLLoader
 
     @FXML // fx:id="boxFood"
-    private ComboBox<?> boxFood; // Value injected by FXMLLoader
+    private ComboBox<Food> boxFood; // Value injected by FXMLLoader
 
     @FXML // fx:id="txtResult"
     private TextArea txtResult; // Value injected by FXMLLoader
@@ -49,13 +54,46 @@ public class FoodController {
     @FXML
     void doCreaGrafo(ActionEvent event) {
     	txtResult.clear();
-    	txtResult.appendText("Creazione grafo...");
+    	Integer numPortions;
+    	try {
+    		numPortions = Integer.parseInt(txtPorzioni.getText());
+    	} catch(NumberFormatException e) {
+    		txtResult.appendText("Errore, inserire un numero intero!\n");
+    		return;
+    	}
+    	this.model.creaGrafo(numPortions);
+    	this.boxFood.getItems().addAll(this.model.getVertices());
+    	txtResult.setText("Grafo creato\n");
     }
     
     @FXML
     void doCalorie(ActionEvent event) {
     	txtResult.clear();
-    	txtResult.appendText("Analisi calorie...");
+    	Food food = boxFood.getValue();
+    	if(food == null) {
+    		txtResult.appendText("Errore: è necessario selezionare un cibo dall'elenco per trovare "
+    				+ "i 5 cibi con calorie congiunte massime");
+    		return;
+    	}
+    	List<FoodPair> foodPairs = this.model.getEdges();
+    	Collections.sort(foodPairs);
+    	int i = 0;
+    	for(FoodPair fp : foodPairs) {
+    		if(i < 5) {
+    			if(fp.getF1().equals(food)) {
+    	    		txtResult.appendText(String.format("Cibo: %s --- Calorie congiunte: %.3f\n", fp.getF2(), fp.getAvgCalories()));
+    				i++;
+    			}
+    			else if(fp.getF2().equals(food)){
+    	    		txtResult.appendText(String.format("Cibo: %s --- Calorie congiunte: %.3f\n", fp.getF1(), fp.getAvgCalories()));
+    				i++;
+    			}
+    		}
+    	}
+    	if(i == 0) {
+    		txtResult.appendText("Nessuna adiacenza trovata per l'alimento selezionato: impossibile procedere "
+    				+ "al calcolo delle calorie congiunte per i suoi vicini!");
+    	}
     }
 
     @FXML
