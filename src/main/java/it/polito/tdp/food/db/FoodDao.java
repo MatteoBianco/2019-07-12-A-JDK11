@@ -41,7 +41,7 @@ public class FoodDao {
 				"FROM `portion` AS p, food AS f " + 
 				"WHERE f.food_code = p.food_code " + 
 				"GROUP BY f.food_code, f.display_name " + 
-				"HAVING  CNT <= ? ORDER BY f.display_name";
+				"HAVING  CNT = ? ORDER BY f.display_name";
 		List<Food> result = new ArrayList<>();
 		try {
 			Connection conn = DBConnect.getConnection() ;

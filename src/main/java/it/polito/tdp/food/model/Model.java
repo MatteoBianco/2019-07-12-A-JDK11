@@ -1,5 +1,6 @@
 package it.polito.tdp.food.model;
 
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,10 +19,12 @@ public class Model {
 	private Map<Integer, Food> idMapFood;
 	private Graph<Food, DefaultWeightedEdge> graph;
 	private List<FoodPair> foodPairs;
+	private Simulator simulator;
 	
 	public Model() {
 		this.dao = new FoodDao();
 		idMapFood = new HashMap<>();
+		simulator = new Simulator();
 	}
 
 	public void creaGrafo(Integer numPortions) {
@@ -33,6 +36,23 @@ public class Model {
 				Graphs.addEdge(this.graph, fp.getF1(), fp.getF2(), fp.getAvgCalories());
 			}
 		}
+	}
+	
+	public void simulate(Food start, int K) {
+		this.simulator.init(this.graph, start, this.foodPairs, K);
+		this.simulator.run();
+	}
+	
+	public int getNumFoodPrepared() {
+		return this.simulator.getNumFoodPrepared();
+	}
+	
+	public List<Food> getFoodPrepared() {
+		return this.simulator.getFoodPrepared();
+	}
+	
+	public Duration getTotalTime() {
+		return this.simulator.getTotalTime();
 	}
 	
 	public Set<Food> getVertices() {

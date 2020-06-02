@@ -5,6 +5,7 @@
 package it.polito.tdp.food;
 
 import java.net.URL;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -54,6 +55,7 @@ public class FoodController {
     @FXML
     void doCreaGrafo(ActionEvent event) {
     	txtResult.clear();
+    	boxFood.getItems().removeAll(boxFood.getItems());
     	Integer numPortions;
     	try {
     		numPortions = Integer.parseInt(txtPorzioni.getText());
@@ -63,6 +65,10 @@ public class FoodController {
     	}
     	this.model.creaGrafo(numPortions);
     	this.boxFood.getItems().addAll(this.model.getVertices());
+    	if(boxFood.getItems().size() == 0) {
+        	txtResult.setText("Nessun cibo presente col numero di porzioni indicato\n");
+        	return;
+    	}
     	txtResult.setText("Grafo creato\n");
     }
     
@@ -99,7 +105,35 @@ public class FoodController {
     @FXML
     void doSimula(ActionEvent event) {
     	txtResult.clear();
-    	txtResult.appendText("Simulazione...");
+    	Integer K;
+    	try {
+    		K = Integer.parseInt(txtK.getText());
+    	} catch(NumberFormatException e) {
+    		txtResult.appendText("Errore, inserire un numero intero compreso tra 1 e 10!\n");
+    		return;
+    	}
+    	if(K<1 || K>10) {
+    		txtResult.appendText("Errore, inserire un numero intero compreso tra 1 e 10!\n");
+    		return;
+    	}
+    	Food start = this.boxFood.getValue();
+    	if(start == null) {
+    		txtResult.appendText("Errore: è necessario selezionare un cibo dall'elenco per far partire "
+    				+ "la simulazione\n");
+    		return;
+    	}
+    	this.model.simulate(start, K);
+    	txtResult.appendText(String.format("Sono stati preparati, con %d workstation, %d piatti a partire "
+    			+ "dal piatto %s.\n", 
+    			K, this.model.getNumFoodPrepared(), start));
+    	txtResult.appendText("Per queste preparazioni, è stato necessario un tempo di " + this.model.getTotalTime().toMinutes() + " minuti.\n");
+    	if(this.model.getFoodPrepared().isEmpty())
+    		return;
+    	txtResult.appendText("Cibi preparati:\n");
+    	for(Food f : this.model.getFoodPrepared()) {
+    		txtResult.appendText(f + "\n");
+    	}
+    	
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
